@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:petcare_app/features/auth/domain/entities/user.dart';
-// import 'package:petcare_app/features/pets/domain/entities/pet.dart';
-// import 'package:petcare_app/features/pets/domain/usecases/get_pets_usecase.dart';
-// import 'package:petcare_app/features/pets/data/repositories/pet_repository_impl.dart';
-// import 'package:petcare_app/features/profile/domain/entities/profile.dart';
-// import 'package:petcare_app/features/profile/domain/usecases/get_profile_usecase.dart';
-// import 'package:petcare_app/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:petcare_app/features/pets/domain/entities/pet.dart';
+import 'package:petcare_app/features/pets/domain/usecases/get_pets_usecase.dart';
+import 'package:petcare_app/features/pets/data/repositories/pet_repository_impl.dart';
+import 'package:petcare_app/features/profile/domain/entities/profile.dart';
+import 'package:petcare_app/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:petcare_app/features/profile/data/repositories/profile_repository_impl.dart';
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -18,21 +18,21 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // late final GetProfileUseCase _getProfileUseCase;
-  // late final GetPetsUseCase _getPetsUseCase;
+  late final GetProfileUseCase _getProfileUseCase;
+  late final GetPetsUseCase _getPetsUseCase;
 
-  // Future<Profile>? _profileFuture;
-  // Future<List<Pet>>? _petsFuture;
+  Future<Profile>? _profileFuture;
+  Future<List<Pet>>? _petsFuture;
 
   @override
   void initState() {
     super.initState();
-    // _getProfileUseCase = GetProfileUseCase(ProfileRepositoryImpl());
-    // _getPetsUseCase = GetPetsUseCase(PetRepositoryImpl());
+    _getProfileUseCase = GetProfileUseCase(ProfileRepositoryImpl());
+    _getPetsUseCase = GetPetsUseCase(PetRepositoryImpl());
 
-    // // Iniciar carga del perfil usando el id del usuario autenticado
-    // _profileFuture = _getProfileUseCase.execute(widget.user.id);
-    // _petsFuture = _getPetsUseCase.execute();
+    // Iniciar carga del perfil usando el id del usuario autenticado
+    _profileFuture = _getProfileUseCase.execute(widget.user.id);
+    _petsFuture = _getPetsUseCase.execute();
   }
 
   @override
@@ -45,37 +45,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: const Text('Dashboard'),
         centerTitle: true,
         elevation: 0,
-        // actions: [
-        //   FutureBuilder<Profile>(
-        //     future: _profileFuture,
-        //     builder: (context, snapshot) {
-        //       if (snapshot.hasData) {
-        //         final profile = snapshot.data!;
-        //         return Padding(
-        //           padding: const EdgeInsets.only(right: 16.0),
-        //           child: GestureDetector(
-        //             onTap: () {
-        //               Navigator.pushNamed(
-        //                 context,
-        //                 '/profile',
-        //                 arguments: profile,
-        //               );
-        //             },
-        //             child: CircleAvatar(
-        //               backgroundImage: AssetImage(profile.avatarPath),
-        //               radius: 20,
-        //             ),
-        //           ),
-        //         );
-        //       }
-        //       // Estado de carga o sin datos
-        //       return const Padding(
-        //         padding: EdgeInsets.only(right: 16.0),
-        //         child: CircleAvatar(radius: 20, child: Icon(Icons.person)),
-        //       );
-        //     },
-        //   ),
-        // ],
+        actions: [
+          FutureBuilder<Profile>(
+            future: _profileFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final profile = snapshot.data!;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/profile',
+                        arguments: profile,
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage(profile.avatarPath),
+                      radius: 20,
+                    ),
+                  ),
+                );
+              }
+              // Estado de carga o sin datos
+              return const Padding(
+                padding: EdgeInsets.only(right: 16.0),
+                child: CircleAvatar(radius: 20, child: Icon(Icons.person)),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -137,29 +137,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // FutureBuilder<List<Pet>>(
-                    //   future: _petsFuture,
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.connectionState ==
-                    //         ConnectionState.waiting) {
-                    //       return const SizedBox(
-                    //         height: 56,
-                    //         child: Center(child: AppSpinner(size: 40)),
-                    //       );
-                    //     }
+                    FutureBuilder<List<Pet>>(
+                      future: _petsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                            height: 56,
+                            child: Center(child: AppSpinner(size: 40)),
+                          );
+                        }
 
-                    //     final count = snapshot.hasData
-                    //         ? snapshot.data!.length
-                    //         : 0;
-                    //     return Text(
-                    //       '$count',
-                    //       style: theme.textTheme.titleLarge?.copyWith(
-                    //         fontSize: 56,
-                    //         color: colorScheme.onSecondaryContainer,
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
+                        final count = snapshot.hasData
+                            ? snapshot.data!.length
+                            : 0;
+                        return Text(
+                          '$count',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontSize: 56,
+                            color: colorScheme.onSecondaryContainer,
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
